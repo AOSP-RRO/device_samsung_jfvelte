@@ -189,7 +189,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     fstab.qcom \
     init.carrier.rc \
-    init.crda.sh \
     init.qcom.rc \
     init.qcom.power.rc \
     init.qcom.usb.rc \
@@ -203,6 +202,14 @@ PRODUCT_PACKAGES += \
 # SPN override
 PRODUCT_COPY_FILES += \
     device/samsung/jfvelte/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
+
+# Stlport
+PRODUCT_PACKAGES += \
+    libstlport
+
+# Thermal
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/thermal-engine-8064ab.conf:system/etc/thermal-engine-8064ab.conf
 
 # Wifi
 PRODUCT_PACKAGES += \
