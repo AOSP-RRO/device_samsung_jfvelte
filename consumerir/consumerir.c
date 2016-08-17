@@ -15,10 +15,10 @@
  */
 #define LOG_TAG "ConsumerIrHal"
 
-#include <stdlib.h>
+#include <errno.h>
 #include <malloc.h>
 #include <stdbool.h>
-#include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -39,43 +39,41 @@ static const consumerir_freq_range_t consumerir_freqs[] = {
     {.min = 56000, .max = 56000},
 };
 
-static bool
-try_append_number(char *buffer, int *len, int size, int number)
+static bool try_append_number(char *buffer, int *len, int size, int number)
 {
     int stored;
 
     stored = snprintf(&buffer[*len], size - *len, "%d,", number);
 
-    if (stored < 0 || stored >= size - *len) {
+    if (stored < 0 || stored >= (size - *len))
         return false;
-    }
 
     *len += stored;
     return true;
 }
 
-static bool
-grow_buffer(char **buffer, int *size)
+static bool grow_buffer(char **buffer, int *size)
 {
     char *new_buffer;
 
     *size *= 2;
-    if ((new_buffer = realloc(*buffer, *size)) == NULL) {
+    new_buffer = realloc(*buffer, *size);
+    if (new_buffer == NULL)
         return false;
-    }
+
     *buffer = new_buffer;
     return true;
 }
 
-static bool
-append_number(char **buffer, int *len, int *size, int number)
+static bool append_number(char **buffer, int *len, int *size, int number)
 {
-    if (! try_append_number(*buffer, len, *size, number)) {
-        if (! grow_buffer(buffer, size)) return false;
-        return try_append_number(*buffer, len, *size, number);
-    } else {
+    if (try_append_number(*buffer, len, *size, number))
         return true;
-    }
+
+    if (!grow_buffer(buffer, size))
+        return false;
+
+    return try_append_number(*buffer, len, *size, number);
 }
 
 int fd = 0;
@@ -87,14 +85,13 @@ static int consumerir_transmit(UNUSED struct consumerir_device *dev,
     int i;
     char *buffer;
 
-    if ((buffer = malloc(buffer_size)) == NULL) {
+    buffer = malloc(buffer_size);
+    if (buffer == NULL)
         return -ENOMEM;
-    }
 
     /* write the header */
-    if (! append_number(&buffer, &buffer_len, &buffer_size, carrier_freq)) {
+    if (!append_number(&buffer, &buffer_len, &buffer_size, carrier_freq))
         goto error;
-    }
 
     /* calculate factor of conversion from microseconds to pulses */
     float factor = 1000000 / carrier_freq;
@@ -102,7 +99,8 @@ static int consumerir_transmit(UNUSED struct consumerir_device *dev,
     /* write out the timing pattern */
     for (i = 0; i < pattern_len; i++)
     {
-        if (! append_number(&buffer, &buffer_len, &buffer_size, (int) (pattern[i]/factor))) {
+        if (!append_number(&buffer, &buffer_len, &buffer_size,
+                (int) (pattern[i] / factor))) {
             goto error;
         }
     }

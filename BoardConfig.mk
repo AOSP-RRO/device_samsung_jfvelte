@@ -43,7 +43,7 @@ BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=31 zcache msm_rtb.f
 BOARD_KERNEL_BASE := 0x80200000
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02000000
 BOARD_KERNEL_PAGESIZE := 2048
-TARGET_KERNEL_CONFIG := cyanogen_jfve_defconfig
+TARGET_KERNEL_CONFIG := cyanogenmod_jfve_defconfig
 TARGET_KERNEL_SOURCE := kernel/samsung/jf
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-linux-androideabi-
 
@@ -75,11 +75,9 @@ TARGET_PROVIDES_CAMERA_HAL := true
 USE_DEVICE_SPECIFIC_CAMERA := true
 
 # Charger
-BOARD_BATTERY_DEVICE_NAME     := "battery"
-BOARD_CHARGING_CMDLINE_NAME   := "androidboot.bootchg"
-BOARD_CHARGING_CMDLINE_VALUE  := "true"
-BOARD_CHARGER_ENABLE_SUSPEND  := true
-BOARD_CHARGER_SHOW_PERCENTAGE := true
+BOARD_CHARGING_CMDLINE_NAME := "androidboot.bootchg"
+BOARD_CHARGING_CMDLINE_VALUE := "true"
+BOARD_CHARGER_ENABLE_SUSPEND := true
 
 # CMHW
 BOARD_HARDWARE_CLASS += $(COMMON_PATH)/cmhw
