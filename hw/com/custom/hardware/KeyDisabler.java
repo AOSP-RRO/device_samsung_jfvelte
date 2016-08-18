@@ -16,7 +16,7 @@
 
 package com.custom.hardware;
 
-import com.custom.hardware.FileUtils;
+import com.custom.hardware.util.FileUtils;
 
 /*
  * Disable capacitive keys
@@ -36,7 +36,7 @@ public class KeyDisabler {
      */
 
     public static boolean isSupported() {
-        return FileUtils.isFileWritable(KEYDISABLER_PATH);
+        return true;
     }
 
     /*
